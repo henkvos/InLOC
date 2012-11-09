@@ -5,20 +5,56 @@ from django.contrib.contenttypes.models import ContentType
 from l10n.models import Language
 from utils.fields import UUIDField
 
+class LOCProperty(models.Model):
+    '''
+    Abstract base class for properties on LOC class
+    '''
+    id = UUIDField(auto=True, primary_key=True)
+    content_type = models.ForeignKey(ContentType)
+    object_id = models.CharField(max_length=36)
+    language = models.ForeignKey(Language)
+    value = models.TextField(blank=True, null=True)
+    
+    class Meta:
+        abstract = True
+        
+class Title(LOCProperty):
+    pass
+
+class Abbreviation(LOCProperty):
+    pass
+
+class Description(LOCProperty):
+    pass
+        
+class Rights(LOCProperty):
+    pass
+
+class FurtherInfo(models.Model):
+    id = UUIDField(auto=True, primary_key=True)
+    content_type = models.ForeignKey(ContentType)
+    object_id = models.CharField(max_length=36)
+    info = models.TextField(blank=True, null=True)
+
+
 class LOCModel(models.Model):
     '''
     Abstract base class for LOCdefinitions and LOCstructures
     '''
     id = UUIDField(auto=True, primary_key=True)
     language = models.ForeignKey(Language, blank=True, null=True)
-    title = models.CharField(max_length=255, blank=True) #multiple titles?
-    description = models.TextField(blank=True, null=True) #multiple descriptions?
     created = models.DateTimeField(auto_now_add=True, editable=False)
     modified = models.DateTimeField(auto_now=True, auto_now_add=True, editable=False)
     issued = models.DateTimeField(blank=True, null=True)
     validity_start = models.DateTimeField(blank=True, null=True)
     validity_end = models.DateTimeField(blank=True, null=True)
     version = models.DecimalField(blank=True, null=True, max_digits=5, decimal_places=2)
+    
+    description = generic.GenericRelation(Description)
+    title = generic.GenericRelation(Title)
+    abbr = generic.GenericRelation(Abbreviation)
+    further_information = generic.GenericRelation(FurtherInfo)
+    rights = generic.GenericRelation(Rights)
     
     def uri(self):
         '''
@@ -30,12 +66,11 @@ class LOCModel(models.Model):
     class Meta:
         abstract = True
         
+
 class LOCDefinition(LOCModel):
     pass
 
-class FurtherInfo(models.Model):
-    id = UUIDField(auto=True, primary_key=True)
-    content_type = models.ForeignKey(ContentType)
-    object_id = models.CharField(max_length=36)
-    info = models.TextField(blank=True, null=True)
+class LOCStructure(LOCModel):
+    pass
+
     
