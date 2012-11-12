@@ -66,11 +66,26 @@ class LOCModel(models.Model):
     class Meta:
         abstract = True
         
+        
+class LOCStructure(LOCModel):
+    '''
+    A LOCstructure instance shall not have more than one combinationRules property in each (or no specified) language.
+    '''
+    pass
+
+class CombinationRule():
+    id = UUIDField(auto=True, primary_key=True)
+    loc_structure = models.ForeignKey(LocStructure)
+    language = models.ForeignKey(Language)
+    value = models.TextField(blank=True, null=True)
+
 
 class LOCDefinition(LOCModel):
-    pass
+    '''
+    A LOCdefinition instance shall not have more than one primaryStructure property.
+    '''
+    primary_structure = models.ForeignKey(LOCStructure, blank=True, null=True)
+    
 
-class LOCStructure(LOCModel):
-    pass
 
     
