@@ -75,7 +75,7 @@ class LOCStructure(LOCModel):
 
 class CombinationRule():
     id = UUIDField(auto=True, primary_key=True)
-    loc_structure = models.ForeignKey(LocStructure)
+    loc_structure = models.ForeignKey(LOCStructure)
     language = models.ForeignKey(Language)
     value = models.TextField(blank=True, null=True)
 
