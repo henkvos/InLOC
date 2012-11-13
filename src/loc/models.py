@@ -73,6 +73,7 @@ class LOCStructure(LOCModel):
     '''
     pass
 
+
 class CombinationRule():
     id = UUIDField(auto=True, primary_key=True)
     loc_structure = models.ForeignKey(LOCStructure)
