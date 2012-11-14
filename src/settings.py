@@ -99,6 +99,8 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'urls'
 
+GRAPPELLI_ADMIN_TITLE = 'InLOC implementation in python/django'
+
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'wsgi.application'
 
@@ -117,6 +119,8 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'genericadmin',
+    'grappelli',
     'django.contrib.admin',
     'l10n',
     'loc',
