@@ -6,4 +6,4 @@ class Language(models.Model):
     loc_name = models.CharField(max_length=255)
 
     def __unicode__(self):
-        return u'%s: %s ( %s )' % (self.lcid, self.loc_name, self.en_name)
+        return u'%s: %s ( %s )' % (self.code, self.loc_name, self.en_name)

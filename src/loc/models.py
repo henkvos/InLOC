@@ -15,6 +15,9 @@ class LOCProperty(models.Model):
     language = models.ForeignKey(Language)
     value = models.TextField(blank=True, null=True)
     
+    def __unicode__(self):
+        return u'%s: %s' % (self.language.code, self.value)
+    
     class Meta:
         abstract = True
         
@@ -45,9 +48,9 @@ class LOCModel(models.Model):
     language = models.ForeignKey(Language, blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True, editable=False)
     modified = models.DateTimeField(auto_now=True, auto_now_add=True, editable=False)
-    issued = models.DateTimeField(blank=True, null=True)
-    validity_start = models.DateTimeField(blank=True, null=True)
-    validity_end = models.DateTimeField(blank=True, null=True)
+    issued = models.DateField(blank=True, null=True)
+    validity_start = models.DateField(blank=True, null=True)
+    validity_end = models.DateField(blank=True, null=True)
     version = models.DecimalField(blank=True, null=True, max_digits=5, decimal_places=2)
     
     description = generic.GenericRelation(Description)
