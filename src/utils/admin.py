@@ -25,19 +25,53 @@ class TitleInline(GenericStackedInline):
     related_lookup_fields = {
         'generic': [['content_type', 'object_id'],],
     }
+    
+class DescriptionInline(GenericStackedInline):
+    model = Description
+    extra = 0
+    related_lookup_fields = {
+        'generic': [['content_type', 'object_id'],],
+    }
+    
+class AbbreviationInline(GenericStackedInline):
+    model = Abbreviation
+    extra = 0
+    related_lookup_fields = {
+        'generic': [['content_type', 'object_id'],],
+    }
+    
+class RightsInline(GenericStackedInline):
+    model = Rights
+    extra = 0
+    related_lookup_fields = {
+        'generic': [['content_type', 'object_id'],],
+    }
 
-class LOCDefinitionAdmin(GenericAdminModelAdmin):
-    model = LOCDefinition
+class FurtherInfoInline(GenericStackedInline):
+    model = FurtherInfo
+    extra = 0
+    related_lookup_fields = {
+        'generic': [['content_type', 'object_id'],],
+    }
+
+class LOCModelAdmin(GenericAdminModelAdmin):
+    model = LOCModel
     inlines = [
              TitleInline,
+             DescriptionInline,
+             AbbreviationInline,
+             RightsInline,
+             FurtherInfoInline,
              ]
-    
-class LOCStructureAdmin(admin.ModelAdmin):
+
+class LOCDefinitionAdmin(LOCModelAdmin):
+    model = LOCDefinition
+ 
+class LOCStructureAdmin(LOCModelAdmin):
     model = LOCStructure
 
 
 admin.site.register(Session, SessionAdmin)
 admin.site.register(LOCDefinition, LOCDefinitionAdmin)
 admin.site.register(LOCStructure, LOCStructureAdmin)
-#admin.site.register(Title, TitleAdmin)
 admin.site.register(Language, LanguageAdmin)

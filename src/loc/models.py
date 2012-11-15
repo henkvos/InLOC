@@ -31,6 +31,8 @@ class Description(LOCProperty):
     pass
         
 class Rights(LOCProperty):
+    class Meta:
+        verbose_name_plural = "Rights"
     pass
 
 class FurtherInfo(models.Model):
@@ -38,6 +40,12 @@ class FurtherInfo(models.Model):
     content_type = models.ForeignKey(ContentType)
     object_id = models.CharField(max_length=36)
     info = models.TextField(blank=True, null=True)
+    
+    def __unicode__(self):
+        return u'%s' % (self.info)
+    
+    class Meta:
+        verbose_name_plural = "Further information"
 
 
 class LOCModel(models.Model):
@@ -65,6 +73,18 @@ class LOCModel(models.Model):
         '''
         base_uri = settings.LOC_BASE_URI
         return u'%s/%s' % (base_uri, self.id)
+    
+    def __unicode__(self):
+        try:
+            en = Language.objects.get(code='en')
+            main_title = self.title.get(language=en)
+            if main_title:
+                print main_title.value
+                return u'%s: %s' % (self.id, main_title)
+            else:
+                 return u'%s' % (self.id)
+        except:
+            return u'%s' % (self.id)
 
     class Meta:
         abstract = True
