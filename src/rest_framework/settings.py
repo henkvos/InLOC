@@ -17,8 +17,10 @@ This module provides the `api_setting` object, that is used to access
 REST framework settings, checking for user settings first, then falling
 back to the defaults.
 """
+from __future__ import unicode_literals
 from django.conf import settings
 from django.utils import importlib
+from rest_framework.compat import six
 
 
 USER_SETTINGS = getattr(settings, 'REST_FRAMEWORK', None)
@@ -54,19 +56,26 @@ DEFAULTS = {
         'user': None,
         'anon': None,
     },
+
+    # Pagination
     'PAGINATE_BY': None,
+    'PAGINATE_BY_PARAM': None,
+
+    # Filtering
     'FILTER_BACKEND': None,
 
+    # Authentication
     'UNAUTHENTICATED_USER': 'django.contrib.auth.models.AnonymousUser',
     'UNAUTHENTICATED_TOKEN': None,
 
+    # Browser enhancements
     'FORM_METHOD_OVERRIDE': '_method',
     'FORM_CONTENT_OVERRIDE': '_content',
     'FORM_CONTENTTYPE_OVERRIDE': '_content_type',
     'URL_ACCEPT_OVERRIDE': 'accept',
     'URL_FORMAT_OVERRIDE': 'format',
 
-    'FORMAT_SUFFIX_KWARG': 'format'
+    'FORMAT_SUFFIX_KWARG': 'format',
 }
 
 
@@ -91,7 +100,7 @@ def perform_import(val, setting_name):
     If the given setting is a string import notation,
     then perform the necessary import or imports.
     """
-    if isinstance(val, basestring):
+    if isinstance(val, six.string_types):
         return import_from_string(val, setting_name)
     elif isinstance(val, (list, tuple)):
         return [import_from_string(item, setting_name) for item in val]
@@ -108,8 +117,8 @@ def import_from_string(val, setting_name):
         module_path, class_name = '.'.join(parts[:-1]), parts[-1]
         module = importlib.import_module(module_path)
         return getattr(module, class_name)
-    except:
-        msg = "Could not import '%s' for API setting '%s'" % (val, setting_name)
+    except ImportError as e:
+        msg = "Could not import '%s' for API setting '%s'. %s: %s." % (val, setting_name, e.__class__.__name__, e)
         raise ImportError(msg)
 
 
@@ -152,7 +161,7 @@ class APISettings(object):
 
     def validate_setting(self, attr, val):
         if attr == 'FILTER_BACKEND' and val is not None:
-            # Make sure we can initilize the class
+            # Make sure we can initialize the class
             val()
 
 api_settings = APISettings(USER_SETTINGS, DEFAULTS, IMPORT_STRINGS)

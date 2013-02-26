@@ -1,7 +1,9 @@
+from __future__ import unicode_literals
 from django.http import Http404
 from rest_framework import exceptions
 from rest_framework.settings import api_settings
 from rest_framework.utils.mediatypes import order_by_precedence, media_type_matches
+from rest_framework.utils.mediatypes import _MediaType
 
 
 class BaseContentNegotiation(object):
@@ -32,7 +34,7 @@ class DefaultContentNegotiation(BaseContentNegotiation):
         """
         # Allow URL style format override.  eg. "?format=json
         format_query_param = self.settings.URL_FORMAT_OVERRIDE
-        format = format_suffix or request.GET.get(format_query_param)
+        format = format_suffix or request.QUERY_PARAMS.get(format_query_param)
 
         if format:
             renderers = self.filter_renderers(renderers, format)
@@ -48,7 +50,8 @@ class DefaultContentNegotiation(BaseContentNegotiation):
                 for media_type in media_type_set:
                     if media_type_matches(renderer.media_type, media_type):
                         # Return the most specific media type as accepted.
-                        if len(renderer.media_type) > len(media_type):
+                        if (_MediaType(renderer.media_type).precedence >
+                            _MediaType(media_type).precedence):
                             # Eg client requests '*/*'
                             # Accepted media type is 'application/json'
                             return renderer, renderer.media_type
@@ -78,5 +81,5 @@ class DefaultContentNegotiation(BaseContentNegotiation):
         Allows URL style accept override.  eg. "?accept=application/json"
         """
         header = request.META.get('HTTP_ACCEPT', '*/*')
-        header = request.GET.get(self.settings.URL_ACCEPT_OVERRIDE, header)
+        header = request.QUERY_PARAMS.get(self.settings.URL_ACCEPT_OVERRIDE, header)
         return [token.strip() for token in header.split(',')]

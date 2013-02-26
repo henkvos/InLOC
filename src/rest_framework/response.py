@@ -1,5 +1,7 @@
+from __future__ import unicode_literals
 from django.core.handlers.wsgi import STATUS_CODE_TEXT
 from django.template.response import SimpleTemplateResponse
+from rest_framework.compat import six
 
 
 class Response(SimpleTemplateResponse):
@@ -15,14 +17,17 @@ class Response(SimpleTemplateResponse):
         Alters the init arguments slightly.
         For example, drop 'template_name', and instead use 'data'.
 
-        Setting 'renderer' and 'media_type' will typically be defered,
+        Setting 'renderer' and 'media_type' will typically be deferred,
         For example being set automatically by the `APIView`.
         """
         super(Response, self).__init__(None, status=status)
         self.data = data
-        self.headers = headers and headers[:] or []
         self.template_name = template_name
         self.exception = exception
+
+        if headers:
+            for name, value in six.iteritems(headers):
+                self[name] = value
 
     @property
     def rendered_content(self):

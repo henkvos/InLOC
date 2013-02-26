@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 from rest_framework.compat import django_filters
 
 FilterSet = django_filters and django_filters.FilterSet or None
@@ -45,7 +46,7 @@ class DjangoFilterBackend(BaseFilterBackend):
             class AutoFilterSet(self.default_filter_set):
                 class Meta:
                     model = view_model
-                fields = filter_fields
+                    fields = filter_fields
             return AutoFilterSet
 
         return None
@@ -54,6 +55,6 @@ class DjangoFilterBackend(BaseFilterBackend):
         filter_class = self.get_filter_class(view)
 
         if filter_class:
-            return filter_class(request.GET, queryset=queryset)
+            return filter_class(request.QUERY_PARAMS, queryset=queryset)
 
         return queryset
