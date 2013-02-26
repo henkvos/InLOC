@@ -1,22 +1,68 @@
 """
 The `compat` module provides support for backwards compatibility with older
-versions of django/python, and compatbility wrappers around optional packages.
+versions of django/python, and compatibility wrappers around optional packages.
 """
 # flake8: noqa
+from __future__ import unicode_literals
+
 import django
+
+# Try to import six from Django, fallback to included `six`.
+try:
+    from django.utils import six
+except ImportError:
+    from rest_framework import six
+
+# location of patterns, url, include changes in 1.4 onwards
+try:
+    from django.conf.urls import patterns, url, include
+except ImportError:
+    from django.conf.urls.defaults import patterns, url, include
+
+# Handle django.utils.encoding rename:
+# smart_unicode -> smart_text
+# force_unicode -> force_text
+try:
+    from django.utils.encoding import smart_text
+except ImportError:
+    from django.utils.encoding import smart_unicode as smart_text
+try:
+    from django.utils.encoding import force_text
+except ImportError:
+    from django.utils.encoding import force_unicode as force_text
+
 
 # django-filter is optional
 try:
     import django_filters
-except:
+except ImportError:
     django_filters = None
 
 
 # cStringIO only if it's available, otherwise StringIO
 try:
-    import cStringIO as StringIO
+    import cStringIO.StringIO as StringIO
 except ImportError:
-    import StringIO
+    StringIO = six.StringIO
+
+BytesIO = six.BytesIO
+
+
+# urlparse compat import (Required because it changed in python 3.x)
+try:
+    from urllib import parse as urlparse
+except ImportError:
+    import urlparse
+
+
+# Try to import PIL in either of the two ways it can end up installed.
+try:
+    from PIL import Image
+except ImportError:
+    try:
+        import Image
+    except ImportError:
+        Image = None
 
 
 def get_concrete_model(model_cls):
@@ -25,6 +71,20 @@ def get_concrete_model(model_cls):
     except AttributeError:
         # 1.3 does not include concrete model
         return model_cls
+
+
+# Django 1.5 add support for custom auth user model
+if django.VERSION >= (1, 5):
+    from django.conf import settings
+    if hasattr(settings, 'AUTH_USER_MODEL'):
+        User = settings.AUTH_USER_MODEL
+    else:
+        from django.contrib.auth.models import User
+else:
+    try:
+        from django.contrib.auth.models import User
+    except ImportError:
+        raise ImportError("User model is not to be found.")
 
 
 # First implementation of Django class-based views did not include head method
@@ -45,11 +105,11 @@ else:
             # sanitize keyword arguments
             for key in initkwargs:
                 if key in cls.http_method_names:
-                    raise TypeError(u"You tried to pass in the %s method name as a "
-                                    u"keyword argument to %s(). Don't do that."
+                    raise TypeError("You tried to pass in the %s method name as a "
+                                    "keyword argument to %s(). Don't do that."
                                     % (key, cls.__name__))
                 if not hasattr(cls, key):
-                    raise TypeError(u"%s() received an invalid keyword %r" % (
+                    raise TypeError("%s() received an invalid keyword %r" % (
                         cls.__name__, key))
 
             def view(request, *args, **kwargs):
@@ -66,6 +126,12 @@ else:
             update_wrapper(view, cls.dispatch, assigned=())
             return view
 
+# Taken from @markotibold's attempt at supporting PATCH.
+# https://github.com/markotibold/django-rest-framework/tree/patch
+http_method_names = set(View.http_method_names)
+http_method_names.add('patch')
+View.http_method_names = list(http_method_names)  # PATCH method is not implemented by Django
+
 # PUT, DELETE do not require CSRF until 1.4.  They should.  Make it better.
 if django.VERSION >= (1, 4):
     from django.middleware.csrf import CsrfViewMiddleware
@@ -74,7 +140,6 @@ else:
     import re
     import random
     import logging
-    import urlparse
 
     from django.conf import settings
     from django.core.urlresolvers import get_callable
@@ -116,7 +181,8 @@ else:
         randrange = random.SystemRandom().randrange
     else:
         randrange = random.randrange
-    _MAX_CSRF_KEY = 18446744073709551616L     # 2 << 63
+
+    _MAX_CSRF_KEY = 18446744073709551616      # 2 << 63
 
     REASON_NO_REFERER = "Referer checking failed - no Referer."
     REASON_BAD_REFERER = "Referer checking failed - %s does not match %s."
@@ -283,7 +349,7 @@ except ImportError:
 
 # dateparse is ALSO new in Django 1.4
 try:
-    from django.utils.dateparse import parse_date, parse_datetime
+    from django.utils.dateparse import parse_date, parse_datetime, parse_time
 except ImportError:
     import datetime
     import re
@@ -355,8 +421,8 @@ except ImportError:
     yaml = None
 
 
-# xml.etree.parse only throws ParseError for python >= 2.7
+# XML is optional
 try:
-    from xml.etree import ParseError as ETParseError
-except ImportError:  # python < 2.7
-    ETParseError = None
+    import defusedxml.ElementTree as etree
+except ImportError:
+    etree = None

@@ -1,18 +1,18 @@
 """
 Provides an APIView class that is used as the base of all class-based views.
 """
-
-import re
+from __future__ import unicode_literals
 from django.core.exceptions import PermissionDenied
 from django.http import Http404
 from django.utils.html import escape
 from django.utils.safestring import mark_safe
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import status, exceptions
-from rest_framework.compat import View, apply_markdown
+from rest_framework.compat import View, apply_markdown, smart_text
 from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework.settings import api_settings
+import re
 
 
 def _remove_trailing_string(content, trailing):
@@ -140,7 +140,7 @@ class APIView(View):
 
     def http_method_not_allowed(self, request, *args, **kwargs):
         """
-        Called if `request.method` does not corrospond to a handler method.
+        Called if `request.method` does not correspond to a handler method.
         """
         raise exceptions.MethodNotAllowed(request.method)
 
@@ -148,6 +148,8 @@ class APIView(View):
         """
         If request is not permitted, determine what kind of exception to raise.
         """
+        if not self.request.successful_authenticator:
+            raise exceptions.NotAuthenticated()
         raise exceptions.PermissionDenied()
 
     def throttled(self, request, wait):
@@ -155,6 +157,15 @@ class APIView(View):
         If request is throttled, determine what kind of exception to raise.
         """
         raise exceptions.Throttled(wait)
+
+    def get_authenticate_header(self, request):
+        """
+        If a request is unauthenticated, determine the WWW-Authenticate
+        header to use for 401 responses, if any.
+        """
+        authenticators = self.get_authenticators()
+        if authenticators:
+            return authenticators[0].authenticate_header(request)
 
     def get_parser_context(self, http_request):
         """
@@ -200,13 +211,13 @@ class APIView(View):
 
     def get_parsers(self):
         """
-        Instantiates and returns the list of renderers that this view can use.
+        Instantiates and returns the list of parsers that this view can use.
         """
         return [parser() for parser in self.parser_classes]
 
     def get_authenticators(self):
         """
-        Instantiates and returns the list of renderers that this view can use.
+        Instantiates and returns the list of authenticators that this view can use.
         """
         return [auth() for auth in self.authentication_classes]
 
@@ -241,23 +252,33 @@ class APIView(View):
 
         try:
             return conneg.select_renderer(request, renderers, self.format_kwarg)
-        except:
+        except Exception:
             if force:
                 return (renderers[0], renderers[0].media_type)
             raise
 
-    def has_permission(self, request, obj=None):
+    def check_permissions(self, request):
         """
-        Return `True` if the request should be permitted.
+        Check if the request should be permitted.
+        Raises an appropriate exception if the request is not permitted.
         """
         for permission in self.get_permissions():
-            if not permission.has_permission(request, self, obj):
-                return False
-        return True
+            if not permission.has_permission(request, self):
+                self.permission_denied(request)
+
+    def check_object_permissions(self, request, obj):
+        """
+        Check if the request should be permitted for a given object.
+        Raises an appropriate exception if the request is not permitted.
+        """
+        for permission in self.get_permissions():
+            if not permission.has_object_permission(request, self, obj):
+                self.permission_denied(request)
 
     def check_throttles(self, request):
         """
         Check if request should be throttled.
+        Raises an appropriate exception if the request is throttled.
         """
         for throttle in self.get_throttles():
             if not throttle.allow_request(request, self):
@@ -284,8 +305,7 @@ class APIView(View):
         self.format_kwarg = self.get_format_suffix(**kwargs)
 
         # Ensure that the incoming request is permitted
-        if not self.has_permission(request):
-            self.permission_denied(request)
+        self.check_permissions(request)
         self.check_throttles(request)
 
         # Perform content negotiation and store the accepted info on the request
@@ -318,6 +338,16 @@ class APIView(View):
         if isinstance(exc, exceptions.Throttled):
             # Throttle wait header
             self.headers['X-Throttle-Wait-Seconds'] = '%d' % exc.wait
+
+        if isinstance(exc, (exceptions.NotAuthenticated,
+                            exceptions.AuthenticationFailed)):
+            # WWW-Authenticate header for 401 responses, else coerce to 403
+            auth_header = self.get_authenticate_header(self.request)
+
+            if auth_header:
+                self.headers['WWW-Authenticate'] = auth_header
+            else:
+                exc.status_code = status.HTTP_403_FORBIDDEN
 
         if isinstance(exc, exceptions.APIException):
             return Response({'detail': exc.detail},

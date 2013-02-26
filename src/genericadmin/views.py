@@ -1,7 +1,4 @@
-try: 
-    import json
-except ImportError: 
-    import simplejson as json
+import json
     
 from django.http import HttpResponse, HttpResponseNotAllowed
 from django.contrib.contenttypes.models import ContentType
