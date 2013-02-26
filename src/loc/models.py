@@ -1,9 +1,13 @@
-from django.db import models
+# -*- coding: utf-8 -*-
+
 from django.conf import settings
 from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
+from django.db import models
+
 from l10n.models import Language
 from utils.fields import UUIDField
+
 
 class LOCProperty(models.Model):
     '''
@@ -20,20 +24,25 @@ class LOCProperty(models.Model):
     
     class Meta:
         abstract = True
-        
+
+
 class Title(LOCProperty):
     pass
+
 
 class Abbreviation(LOCProperty):
     pass
 
+
 class Description(LOCProperty):
     pass
-        
+
+
 class Rights(LOCProperty):
     class Meta:
         verbose_name_plural = "Rights"
     pass
+
 
 class FurtherInfo(models.Model):
     id = UUIDField(auto=True, primary_key=True)
@@ -89,7 +98,7 @@ class LOCModel(models.Model):
     class Meta:
         abstract = True
         
-        
+
 class LOCStructure(LOCModel):
     '''
     A LOCstructure instance shall not have more than one combinationRules property in each (or no specified) language.
@@ -97,7 +106,7 @@ class LOCStructure(LOCModel):
     pass
 
 
-class CombinationRule():
+class CombinationRule(models.Model):
     id = UUIDField(auto=True, primary_key=True)
     loc_structure = models.ForeignKey(LOCStructure)
     language = models.ForeignKey(Language)
@@ -109,6 +118,10 @@ class LOCDefinition(LOCModel):
     A LOCdefinition instance shall not have more than one primaryStructure property.
     '''
     primary_structure = models.ForeignKey(LOCStructure, blank=True, null=True)
+
+
+class LOCAssociation():
+    pass
     
 
 
