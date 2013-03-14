@@ -6,21 +6,26 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 
 from l10n.models import Language
-from utils.fields import UUIDField
 
 
 class LOCProperty(models.Model):
     '''
     Abstract base class for properties on LOC class
     '''
-    id = UUIDField(auto=True, primary_key=True)
+    pk_id = models.AutoField(primary_key=True)
+    #id = models.CharField(max_length=255, blank=True, null=True)
     content_type = models.ForeignKey(ContentType)
     object_id = models.CharField(max_length=36)
-    language = models.ForeignKey(Language)
+    language = models.ForeignKey(Language, blank=True, null=True)
     value = models.TextField(blank=True, null=True)
     
     def __unicode__(self):
-        return u'%s: %s' % (self.language.code, self.value)
+        if self.language:
+            lang = self.language.code
+            return u'%s: %s' % (lang, self.value)
+        else:
+            return u'%s' % (self.value)
+
     
     class Meta:
         abstract = True
@@ -45,7 +50,7 @@ class Rights(LOCProperty):
 
 
 class FurtherInfo(models.Model):
-    id = UUIDField(auto=True, primary_key=True)
+    pk_id = models.AutoField(primary_key=True)
     content_type = models.ForeignKey(ContentType)
     object_id = models.CharField(max_length=36)
     info = models.TextField(blank=True, null=True)
@@ -61,7 +66,8 @@ class LOCModel(models.Model):
     '''
     Abstract base class for LOCdefinitions and LOCstructures
     '''
-    id = UUIDField(auto=True, primary_key=True)
+    pk_id = models.AutoField(primary_key=True)
+    id = models.CharField(max_length=255, blank=True, null=True)
     language = models.ForeignKey(Language, blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True, editable=False)
     modified = models.DateTimeField(auto_now=True, auto_now_add=True, editable=False)
@@ -86,14 +92,19 @@ class LOCModel(models.Model):
     def __unicode__(self):
         try:
             en = Language.objects.get(code='en')
-            main_title = self.title.get(language=en)
-            if main_title:
-                print main_title.value
-                return u'%s: %s' % (self.id, main_title)
+            en_title = self.title.get(language=en)
+            if en_title:
+                return u'%s (%s)' % (en_title, self.id)
             else:
-                 return u'%s' % (self.id)
+                return u'%s (%s)' % (' - no title - ', self.id)
+
         except:
-            return u'%s' % (self.id)
+            titles = Title.objects.filter(object_id=self.pk_id).exclude(language__isnull=False)
+            try:
+                title = titles[0]
+                return u'%s (%s)' % (title, self.id)
+            except:
+                return u'%s (%s)' % (' - no title - ', self.id)
 
     class Meta:
         abstract = True
@@ -106,8 +117,9 @@ class LOCStructure(LOCModel):
     pass
 
 
-class CombinationRule(models.Model):
-    id = UUIDField(auto=True, primary_key=True)
+class CombinationRule(models.Model): #simply a text field instruction
+    pk_id = models.AutoField(primary_key=True)
+    id = models.CharField(max_length=255, blank=True, null=True)
     loc_structure = models.ForeignKey(LOCStructure)
     language = models.ForeignKey(Language)
     value = models.TextField(blank=True, null=True)
