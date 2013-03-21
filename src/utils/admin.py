@@ -81,11 +81,12 @@ class CombinationRuleAdmin(admin.ModelAdmin):
     model = CombinationRule
 
 
-class LOCAssociation(LOCModelAdmin):
-    pass
+class LOCAssociationAdmin(admin.ModelAdmin):
+    model = LOCAssociation
 
-admin.site.register(CombinationRule, CombinationRuleAdmin)
+#admin.site.register(CombinationRule, CombinationRuleAdmin)
 admin.site.register(Language, LanguageAdmin)
 admin.site.register(LOCDefinition, LOCDefinitionAdmin)
 admin.site.register(LOCStructure, LOCStructureAdmin)
+admin.site.register(LOCAssociation, LOCAssociationAdmin)
 admin.site.register(Session, SessionAdmin)
