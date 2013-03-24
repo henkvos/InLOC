@@ -13,7 +13,6 @@ class LOCProperty(models.Model):
     Abstract base class for properties on LOC class
     '''
     pk_id = models.AutoField(primary_key=True)
-    #id = models.CharField(max_length=255, blank=True, null=True)
     content_type = models.ForeignKey(ContentType)
     object_id = models.CharField(max_length=36)
     language = models.ForeignKey(Language, blank=True, null=True)
@@ -132,8 +131,56 @@ class LOCDefinition(LOCModel):
     primary_structure = models.ForeignKey(LOCStructure, blank=True, null=True)
 
 
-class LOCAssociation():
+class Label(LOCProperty):
     pass
+
+
+class LOCAssociationRelatedBase(models.Model):
+    pk_id = models.AutoField(primary_key=True)
+    id = models.CharField(max_length=255, blank=True, null=True)
+    label = generic.GenericRelation(Label)
+
+    class Meta:
+        abstract = True
+
+
+class LOCAssociationObject(LOCAssociationRelatedBase):
+    pass
+
+
+class LOCAssociationSubject(LOCAssociationRelatedBase):
+    pass
+
+
+class LOCAssociationScheme(LOCAssociationRelatedBase):
+    pass
+
+
+class LOCAssociation(models.Model):
+    '''
+    see http://wiki.teria.no/display/inloc/type
+    '''
+    TYPE_CHOICES = (
+        ('LOCrel','http://purl.org/net/inloc/LOCrel'),
+        ('by','http://purl.org/net/inloc/by'),
+        ('category','http://purl.org/net/inloc/category'),
+        ('credit','http://purl.org/net/inloc/credit'),
+        ('level','http://purl.org/net/inloc/level'),
+        ('topic','http://purl.org/net/inloc/topic'),
+    )
+    pk_id = models.AutoField(primary_key=True)
+    id = models.CharField(max_length=255, blank=True, null=True)
+    number = models.DecimalField(blank=True, null=True, max_digits=5, decimal_places=2)
+    object = models.ForeignKey(LOCAssociationObject)
+    subject = models.ForeignKey(LOCAssociationSubject)
+    scheme = models.ForeignKey(LOCAssociationScheme)
+    type = models.CharField(max_length=64, choices=TYPE_CHOICES)
+
+
+    def __unicode__(self):
+        return u'%s (%s)' % (self.subject, self.type)
+
+
     
 
 
