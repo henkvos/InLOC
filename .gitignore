@@ -1,5 +1,13 @@
-*.DS_Store
-*.log
-*.pot
+src/*/migrations/*
+.DS_Store
+.pyc
 *.pyc
-local_settings.py
+settings.py
+src/settings.py
+
+.pydevproject
+.project
+.gitignore
+.settings/*
+.prefs
+.idea/*
