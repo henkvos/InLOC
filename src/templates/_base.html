@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- CSS -->
-    <link href="http://dbe6thbrwufu9.cloudfront.net/bootstrap/2.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="//dbe6thbrwufu9.cloudfront.net/bootstrap/2.3.1/css/bootstrap.min.css" rel="stylesheet">
 
     <style type="text/css">
 
@@ -62,7 +62,7 @@
             z-index: 100;
             height: 60px;
             width:60px;
-            top: 15px;
+            top: 14px;
             margin-left: 55px;
             background-image: url('//dbe6thbrwufu9.cloudfront.net/images/Logo.png'); background-repeat:no-repeat;"
         }
@@ -93,12 +93,12 @@
         }
 
     </style>
-    <link href="http://dbe6thbrwufu9.cloudfront.net/bootstrap/2.3.1/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="//dbe6thbrwufu9.cloudfront.net/bootstrap/2.3.1/css/bootstrap-responsive.css" rel="stylesheet">
 
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
-<script src="ttp://dbe6thbrwufu9.cloudfront.net/js/html5shiv.min.js"></script>
-<![endif]-->
+        <script src="//dbe6thbrwufu9.cloudfront.net/js/html5shiv.min.js"></script>
+    <![endif]-->
 
 
 </head>
@@ -121,7 +121,7 @@
                 <div class="span7">
                 </div>
                 <div class="span2">
-                    <iframe src="http://ghbtns.com/github-btn.html?user=henkvos&repo=InLOC&type=fork&size=large"
+                    <iframe src="//ghbtns.com/github-btn.html?user=henkvos&repo=InLOC&type=fork&size=large"
                             allowtransparency="true" frameborder="0" scrolling="0" width="165" height="30" class="pull-right" style="margin-top: 10px;"></iframe>
                 </div>
             </div>
@@ -141,18 +141,50 @@
 
         <div class="row">
             <div class="span3">
-                <p>Some explaining text here</p>
+                <p>The European funded project, called <a href="http://wiki.teria.no/display/inloc/Home" target="_blank">InLOC</a>,
+                    allows descriptions of learning outcomes and competences to be managed and exchanged.<br>
+
+                    <a href="http://wiki.teria.no/display/inloc/Home" target="_blank">InLOC</a> will enable services that guide people to and through learning into employment.
+                    It will support mobility by enabling links to be made between information about a learner's capability, employers' requirements and intended outcomes of learning opportunities.<br>
+
+                    An information model has been created for representing both learning outcomes and competences.<br>
+                    The models published by <a href="http://wiki.teria.no/display/inloc/Home" target="_blank">InLOC</a>
+                    in this field are able to express a wide range of information and clarify relationships between components.<br>
+
+                    The final technical specification will be put forward as a European Standard (EN).</p>
             </div>
             <div class="span6">
-                <form class="form-signin">
+                <form class="form-signin" method="post" action="." id="login-form">
+                    {% csrf_token %}
                     <h3 class="form-signin-heading">Please sign in</h3>
-                    <input type="text" class="input-block-level" placeholder="User name">
-                    <input type="password" class="input-block-level" placeholder="Password">
+                    {% if form.errors %}
+                        <span style="color: #ff0000;">{% trans "Your email and password combination did not match our records." %}
+                            <br>{% trans "Please try again." %}</span>
+                    {% endif %}
+                    <input type="text" class="input-block-level" placeholder="User name" id="id_username">
+                    <input type="password" class="input-block-level" placeholder="Password" id="id_password">
                     <button class="btn btn-warning" type="submit">Sign in</button>
                 </form>
+                <script type="text/javascript">document.getElementById('id_username').focus()</script>
             </div>
             <div class="span3">
-                <p>Credits here</p>
+                <p>This is a prototype of an <a href="http://wiki.teria.no/display/inloc/Home" target="_blank">InLOC</a> editor created of several components
+                of <a href="http://www.rapasso.com/" target="_blank">Rapasso</a> which is built upon the Open Source python based web application framework
+                    <a href="https://www.djangoproject.com/" target="_blank">Django</a>.<br>
+                    The complete source code of this application is open sourced and available on <a href="https://github.com/henkvos/InLOC/" target="_blank">GitHub</a> under ||what kind of license?||<br>
+                    If you would like to contribute to it's development or an account to try it out, please contact:<br>
+                <address>
+                    <strong>Simon Grant</strong><br>
+                    Team leader <a href="http://wiki.teria.no/display/inloc/Home" target="_blank">InLOC</a> project<br>
+                <a href="mailto:asimong@gmail.com">asimong@gmail.com</a>
+                </address>
+                <address>
+                    <strong>Henk Vos</strong><br>
+                    Software architect of <a href="http://www.rapasso.com/" target="_blank">Rapasso</a><br>
+                    <a href="mailto:henk@rapasso.nl">henk@rapasso.nl</a>
+                </address>
+
+                </p>
             </div>
         </div>
 
@@ -172,7 +204,7 @@
 
 
 <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-<script type="text/javascript" src="http://dbe6thbrwufu9.cloudfront.net/bootstrap/2.3.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="//dbe6thbrwufu9.cloudfront.net/bootstrap/2.3.1/js/bootstrap.min.js"></script>
 
 
 </body>

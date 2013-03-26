@@ -1,5 +1,10 @@
 # Django settings for InLoc project.
 
+import os
+
+PROJECT_DIR = os.path.abspath(os.path.dirname(__file__))
+ROOT_DIR = os.path.abspath(os.path.join(PROJECT_DIR, '../'))
+
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
@@ -86,6 +91,12 @@ STATICFILES_FINDERS = (
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '9h^j1c)6km8awj8(7gna_51&amp;@*(ue3g3xao(#pf%ygd*#@!hy5'
 
+BASE_TEMPLATE_DIRECTORY = os.path.join(PROJECT_DIR, 'templates')
+
+TEMPLATE_DIRS = (
+    BASE_TEMPLATE_DIRECTORY,
+)
+
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
@@ -93,14 +104,19 @@ TEMPLATE_LOADERS = (
 #     'django.template.loaders.eggs.Loader',
 )
 
+LOGIN_URL = '/auth'
+LOGIN_REDIRECT_URL = '/'
+
 MIDDLEWARE_CLASSES = (
+    'django.middleware.gzip.GZipMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    # Uncomment the next line for simple clickjacking protection:
-    # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'utils.middleware.EnforceLoginMiddleware',
 )
 
 ROOT_URLCONF = 'urls'
@@ -109,12 +125,6 @@ GRAPPELLI_ADMIN_TITLE = 'InLOC implementation in python/django'
 
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'wsgi.application'
-
-TEMPLATE_DIRS = (
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
-)
 
 LOC_BASE_URI = 'http://inloc.rapasso.eu/'
 
@@ -128,6 +138,8 @@ INSTALLED_APPS = (
     'genericadmin',
     'grappelli',
     'django.contrib.admin',
+    'auth',
+    'home',
     'l10n',
     'loc',
     'rest_framework',
