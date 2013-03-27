@@ -159,10 +159,11 @@
                     <h3 class="form-signin-heading">Please sign in</h3>
                     {% if form.errors %}
                         <span style="color: #ff0000;">{% trans "Your email and password combination did not match our records." %}
-                            <br>{% trans "Please try again." %}</span>
+                           {% trans "Please try again." %}</span><br>
                     {% endif %}
-                    <input type="text" class="input-block-level" placeholder="User name" id="id_username">
-                    <input type="password" class="input-block-level" placeholder="Password" id="id_password">
+
+                    <input type="text" class="input-block-level" placeholder="User name" id="id_username" name="username">
+                    <input type="password" class="input-block-level" placeholder="Password" id="id_password" name="password">
                     <button class="btn btn-warning" type="submit">Sign in</button>
                 </form>
                 <script type="text/javascript">document.getElementById('id_username').focus()</script>

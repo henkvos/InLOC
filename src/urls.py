@@ -4,18 +4,14 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 admin.autodiscover()
 
-from auth.views import LoginView
+from auth.views import LoginView, LogOut
+from home.views import Home
 
 urlpatterns = patterns('',
-    # Examples:
-    # url(r'^$', 'InLoc.views.home', name='home'),
-    # url(r'^InLoc/', include('InLoc.foo.urls')),
 
-    url(r'^auth', LoginView.as_view()),
-
-    # Uncomment the admin/doc line below to enable admin documentation:
-    url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
     (r'^grappelli/', include('grappelli.urls')),
-    # Uncomment the next line to enable the admin:
+    (r'^admin/logout/', LogOut.as_view()),
     url(r'^admin/', include(admin.site.urls)),
+
+    url(r'^', Home.as_view()),
 )
