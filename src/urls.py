@@ -11,6 +11,7 @@ urlpatterns = patterns('',
 
     (r'^grappelli/', include('grappelli.urls')),
     (r'^admin/logout/', LogOut.as_view()),
+    (r'^logout/', LogOut.as_view()),
     url(r'^admin/', include(admin.site.urls)),
 
     url(r'^', Home.as_view()),
