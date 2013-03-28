@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from django.http import HttpResponseForbidden
 from django.shortcuts import render, redirect
 from django.views.generic.base import View
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate
 from django.contrib.auth.views import login as login_view
-
 
 class Home(View):
 
@@ -13,12 +11,10 @@ class Home(View):
         user = request.user
 
         if request.user.is_authenticated():
+            return render(request, 'app.html', {"user":user})
 
-            return redirect('/admin/')
-
-        #not authenticated, render login
         else:
-            tpl = "_base.html"
+            tpl = "login.html"
             return login_view(request, template_name=tpl)
 
 
@@ -41,5 +37,5 @@ class Home(View):
             return redirect('/')
 
         else:
-            tpl = "_base.html"
+            tpl = "login.html"
             return login_view(request, template_name=tpl)

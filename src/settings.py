@@ -104,7 +104,7 @@ TEMPLATE_LOADERS = (
 #     'django.template.loaders.eggs.Loader',
 )
 
-LOGIN_URL = '/auth'
+LOGIN_URL = '/'
 LOGIN_REDIRECT_URL = '/'
 
 MIDDLEWARE_CLASSES = (
