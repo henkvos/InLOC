@@ -4,7 +4,7 @@
 
 {% block content %}
 
-    <div class="container">
+    <div class="container" class="ng-app:InLOC" id="ng-app" ng-app="InLOC">
         <div class="row">
             <div class="span3">
                 <div class="well sidebar-nav">
@@ -15,9 +15,9 @@
 
 
                         <li class="active"><a href="#">Link</a></li>
-                        <li><a href="#">Link</a></li>
-                        <li><a href="#">Link</a></li>
-                        <li><a href="#">Link</a></li>
+                        <li><a href="#/1">Link</a></li>
+                        <li><a href="#/2">Link</a></li>
+                        <li><a href="#/3">Link</a></li>
 
 
                     </ul>
@@ -40,10 +40,14 @@
             </div>
             <div class="span9">
 
-                app content {{ user.firstname }}
+                <ng-view>
+
+
+
+                </ng-view>
 
             </div>
-        </div><!--/row-->
+        </div>
 
     </div>
 
