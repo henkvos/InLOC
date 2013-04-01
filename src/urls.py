@@ -10,6 +10,7 @@ from home.views import Home
 urlpatterns = patterns('',
 
     (r'^grappelli/', include('grappelli.urls')),
+    (r'^partials/', include('partials.urls')),
     (r'^admin/logout/', LogOut.as_view()),
     (r'^logout/', LogOut.as_view()),
     url(r'^admin/', include(admin.site.urls)),
