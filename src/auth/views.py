@@ -1,10 +1,8 @@
-from django.contrib.auth import logout, login
-from django.views.generic.base import TemplateView, View
+# -*- coding: utf-8 -*-
+
+from django.contrib.auth import logout
+from django.views.generic.base import View
 from django.shortcuts import redirect
-
-
-class LoginView(TemplateView):
-    template_name = "_base.html"
 
 
 class LogOut(View):
