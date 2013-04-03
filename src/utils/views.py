@@ -38,16 +38,14 @@ def process_properties(xml_node, obj, prop):
             property.content_type = ContentType.objects.get_for_model(obj)
             property.object_id = obj.pk
             property.language = lang
+            property.value = p.text
 
-            print type(p.text)
-
-            #property.value = p.text
             print p.text
-            #property.save()
+
+            property.save()
 
     except Exception as e:
         print '%s (%s)' % (e.message, type(e))
-
 
 
 class XMLImportView(View):
@@ -58,7 +56,6 @@ class XMLImportView(View):
             f = request.FILES['file']
 
             structure = objectify.parse(f)
-            #structure = etree.parse(f)
             root = structure.getroot()
 
             stru = LOCStructure()
@@ -75,62 +72,23 @@ class XMLImportView(View):
 
             stru.save()
 
-            #for p in PROPERTY_LIST:
-            #    process_properties(root, stru, p)
+            for p in PROPERTY_LIST:
+                process_properties(root, stru, p)
 
 
-            process_properties(root, stru, 'title')
-            process_properties(root, stru, 'description')
-            process_properties(root, stru, 'furtherInformation')
-            process_properties(root, stru, 'rights')
+            for loc in root.iterchildren(INLOC+'LOCdefinition'):
+                locdef = LOCDefinition()
+                locdef.primary_structure = stru
+                locdef.id = loc.get('id')
+                #locdef.version = loc.version
+                #locdef.created = dateutil.parser.parse(str(loc.created))
 
-            '''
-            #get title attributres
-            try:
-                for t in structure.iter(INLOC+'title'):
-                    print t
-                    lang_code = t.get(XML+'lang')
-                    try:
-                        lang = Language.objects.get(code=lang_code)
-                    except:
-                        lang = None
+                print loc.get('id')
 
-                    title = Title()
-                    title.content_type = ContentType.objects.get_for_model(stru)
-                    title.object_id = stru.pk
-                    title.language = lang
-                    title.value = t
+                locdef.save()
 
-                    title.save()
+                for p in PROPERTY_LIST:
+                    process_properties(loc, locdef, p)
 
-            except:
-                pass
-            '''
 
         return redirect('/')
-
-
-'''
-content_type = models.ForeignKey(ContentType)
-    object_id = models.CharField(max_length=36)
-    language = models.ForeignKey(Language, blank=True, null=True)
-    value = models.TextField(blank=True, null=True)
-
-
-pk_id = models.AutoField(primary_key=True)
-    id = models.CharField(max_length=255, blank=True, null=True)
-    language = models.ForeignKey(Language, blank=True, null=True)
-    created = models.DateTimeField(auto_now_add=True, editable=False)
-    modified = models.DateTimeField(auto_now=True, auto_now_add=True, editable=False)
-    issued = models.DateField(blank=True, null=True)
-    validity_start = models.DateField(blank=True, null=True)
-    validity_end = models.DateField(blank=True, null=True)
-    version = models.DecimalField(blank=True, null=True, max_digits=5, decimal_places=2)
-
-    description = generic.GenericRelation(Description)
-    title = generic.GenericRelation(Title)
-    abbr = generic.GenericRelation(Abbreviation)
-    further_information = generic.GenericRelation(FurtherInfo)
-    rights = generic.GenericRelation(Rights)
-
-'''
