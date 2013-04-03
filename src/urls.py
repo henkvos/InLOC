@@ -11,6 +11,8 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
 
+    (r'^api/', include('api.urls')),
+
     (r'^grappelli/', include('grappelli.urls')),
     (r'^partials/', include('partials.urls')),
 
