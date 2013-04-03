@@ -48,17 +48,10 @@ class Rights(LOCProperty):
     pass
 
 
-class FurtherInfo(models.Model):
-    pk_id = models.AutoField(primary_key=True)
-    content_type = models.ForeignKey(ContentType)
-    object_id = models.CharField(max_length=36)
-    info = models.TextField(blank=True, null=True)
-    
-    def __unicode__(self):
-        return u'%s' % (self.info)
-    
+class FurtherInformation(LOCProperty):
     class Meta:
         verbose_name_plural = "Further information"
+    pass
 
 
 class LOCModel(models.Model):
@@ -78,7 +71,7 @@ class LOCModel(models.Model):
     description = generic.GenericRelation(Description)
     title = generic.GenericRelation(Title)
     abbr = generic.GenericRelation(Abbreviation)
-    further_information = generic.GenericRelation(FurtherInfo)
+    further_information = generic.GenericRelation(FurtherInformation)
     rights = generic.GenericRelation(Rights)
     
     def uri(self):
