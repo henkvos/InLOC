@@ -51,7 +51,7 @@ class RightsInline(GenericStackedInline):
 
 
 class FurtherInfoInline(GenericStackedInline):
-    model = FurtherInfo
+    model = FurtherInformation
     extra = 0
     related_lookup_fields = {
         'generic': [['content_type', 'object_id'],],

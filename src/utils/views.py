@@ -20,13 +20,13 @@ INLOC = "{%s}" % INLOC_NAMESPACE
 
 NSMAP = {None : INLOC_NAMESPACE} # the default namespace (no prefix)
 
-
+PROPERTY_LIST = ('title', 'description', 'rights', 'furtherInformation')
 
 
 def process_properties(xml_node, obj, prop):
-    print INLOC+prop
+
     try:
-        for p in xml_node.iter(INLOC+prop):
+        for p in xml_node.iterchildren(INLOC+prop):
 
             lang_code = p.get(XML+'lang')
             try:
@@ -38,9 +38,12 @@ def process_properties(xml_node, obj, prop):
             property.content_type = ContentType.objects.get_for_model(obj)
             property.object_id = obj.pk
             property.language = lang
-            property.value = p
 
-            property.save()
+            print type(p.text)
+
+            #property.value = p.text
+            print p.text
+            #property.save()
 
     except Exception as e:
         print '%s (%s)' % (e.message, type(e))
@@ -55,6 +58,7 @@ class XMLImportView(View):
             f = request.FILES['file']
 
             structure = objectify.parse(f)
+            #structure = etree.parse(f)
             root = structure.getroot()
 
             stru = LOCStructure()
@@ -71,8 +75,14 @@ class XMLImportView(View):
 
             stru.save()
 
-            process_properties(root, stru, 'title')
+            #for p in PROPERTY_LIST:
+            #    process_properties(root, stru, p)
 
+
+            process_properties(root, stru, 'title')
+            process_properties(root, stru, 'description')
+            process_properties(root, stru, 'furtherInformation')
+            process_properties(root, stru, 'rights')
 
             '''
             #get title attributres
