@@ -56,12 +56,16 @@ class XMLImportView(View):
             f = request.FILES['file']
 
             structure = objectify.parse(f)
+
+            #get LOC structure
             root = structure.getroot()
 
             stru = LOCStructure()
             stru.id = root.get('id')
-            stru.version = root.version
-            stru.created = dateutil.parser.parse(str(root.created))
+            if hasattr(root, 'version'):
+                stru.version = root.version
+            if hasattr(root, 'created'):
+                stru.created = dateutil.parser.parse(str(root.created))
 
             try:
                 lang_code = root.get(XML+'lang')
@@ -75,13 +79,15 @@ class XMLImportView(View):
             for p in PROPERTY_LIST:
                 process_properties(root, stru, p)
 
-
+            #get LOCdefinitions
             for loc in root.iterchildren(INLOC+'LOCdefinition'):
                 locdef = LOCDefinition()
                 locdef.primary_structure = stru
                 locdef.id = loc.get('id')
-                #locdef.version = loc.version
-                #locdef.created = dateutil.parser.parse(str(loc.created))
+                if hasattr(loc, 'version'):
+                    locdef.version = loc.version
+                if hasattr(loc, 'created'):
+                    locdef.created = dateutil.parser.parse(str(loc.created))
 
                 print loc.get('id')
 
@@ -89,6 +95,10 @@ class XMLImportView(View):
 
                 for p in PROPERTY_LIST:
                     process_properties(loc, locdef, p)
+
+            #get LOCassociations
+            for loc in root.iterchildren(INLOC+'LOCassociation'):
+                print loc.get('type', 'no type')
 
 
         return redirect('/')

@@ -3,6 +3,9 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
 
+from rest_framework.decorators import api_view
+from rest_framework.reverse import reverse
+
 from auth.views import LogOut
 from home.views import Home
 from utils.views import XMLImportView
@@ -10,6 +13,7 @@ from utils.views import XMLImportView
 admin.autodiscover()
 
 urlpatterns = patterns('',
+
 
     (r'^api/', include('api.urls')),
 

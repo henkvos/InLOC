@@ -80,13 +80,13 @@ class LOCModel(models.Model):
         '''
         base_uri = settings.LOC_BASE_URI
         return u'%s/%s' % (base_uri, self.id)
-    
-    def __unicode__(self):
+
+    def loc_title(self):
         try:
             en = Language.objects.get(code='en')
             en_title = self.title.get(language=en)
             if en_title:
-                return u'%s (%s)' % (en_title, self.id)
+                return u'%s' % (en_title)
             else:
                 return u'%s (%s)' % (' - no title - ', self.id)
 
@@ -94,9 +94,12 @@ class LOCModel(models.Model):
             titles = Title.objects.filter(object_id=self.pk_id).exclude(language__isnull=False)
             try:
                 title = titles[0]
-                return u'%s (%s)' % (title, self.id)
+                return u'%s' % (title)
             except:
                 return u'%s (%s)' % (' - no title - ', self.id)
+    
+    def __unicode__(self):
+        return self.loc_title()
 
     class Meta:
         abstract = True
@@ -135,6 +138,9 @@ class LOCAssociationRelatedBase(models.Model):
 
     class Meta:
         abstract = True
+
+    def __unicode__(self):
+        return u'%s (%s)' % (self.id, self.label)
 
 
 class LOCAssociationObject(LOCAssociationRelatedBase):
