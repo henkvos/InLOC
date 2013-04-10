@@ -1,8 +1,15 @@
 from django.conf.urls import patterns, include, url
 
 from l10n.views import LanguageList
+from loc.views import LOCStructureList
+from api.views import api_root
 
 urlpatterns = patterns('',
-                       (r'^languages', LanguageList.as_view()),
+                       url(r'^$', api_root),
+                       url(r'^languages/$', LanguageList.as_view(), name='language-list'),
+                       url(r'^locstructures/$', LOCStructureList.as_view(), name='locstructure-list'),
+
+                       #(r'^languages', LanguageList.as_view()),
+                       #(r'^locstructures', LOCStructureList.as_view()),
 
                        )
