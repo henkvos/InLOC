@@ -79,7 +79,7 @@ class LOCModel(models.Model):
         generates uri for LOC
         '''
         base_uri = settings.LOC_BASE_URI
-        return u'%s/%s' % (base_uri, self.id)
+        return u'%s%s/%s' % (base_uri, 'api/locstructures', self.pk_id)
 
     def loc_title(self):
         try:
@@ -88,7 +88,7 @@ class LOCModel(models.Model):
             if en_title:
                 return u'%s' % (en_title)
             else:
-                return u'%s (%s)' % (' - no title - ', self.id)
+                return u'%s' % (' - no title - ')
 
         except:
             titles = Title.objects.filter(object_id=self.pk_id).exclude(language__isnull=False)
@@ -96,7 +96,24 @@ class LOCModel(models.Model):
                 title = titles[0]
                 return u'%s' % (title)
             except:
-                return u'%s (%s)' % (' - no title - ', self.id)
+                return u'%s' % (' - no title - ')
+
+    def loc_description(self):
+        try:
+            en = Language.objects.get(code='en')
+            en_description = self.description.get(language=en)
+            if en_description:
+                return u'%s' % (en_description)
+            else:
+                return u'%s' % (' - no description - ')
+
+        except:
+            descriptions = Description.objects.filter(object_id=self.pk_id).exclude(language__isnull=False)
+            try:
+                description = descriptions[0]
+                return u'%s' % (description)
+            except:
+                return u'%s' % (' - description - ')
     
     def __unicode__(self):
         return self.loc_title()
@@ -124,7 +141,14 @@ class LOCDefinition(LOCModel):
     '''
     A LOCdefinition instance shall not have more than one primaryStructure property.
     '''
-    primary_structure = models.ForeignKey(LOCStructure, blank=True, null=True)
+    primary_structure = models.ForeignKey(LOCStructure, blank=True, null=True, related_name='locdefinitions')
+
+    def uri(self):
+        '''
+        generates uri for LOC
+        '''
+        base_uri = settings.LOC_BASE_URI
+        return u'%s%s/%s' % (base_uri, 'api/locdefinitions', self.pk_id)
 
 
 class Label(LOCProperty):

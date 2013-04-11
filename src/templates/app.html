@@ -10,31 +10,33 @@
                 <div class="well sidebar-nav">
                     <h4>LOC Structures</h4>
                     <hr />
-                    <ul class="nav nav-list">
-                        <li class="nav-header">Available structures</li>
+                    <ul class="nav nav-list" id="locstructure-list" ng-controller="LOCStructureListController" ng-cloak class="ng-cloak">
 
+                        <div ng-repeat="locstructure in locstructures">
 
-                        <li class="active"><a href="#">Link</a></li>
-                        <li><a href="#/1">Link</a></li>
-                        <li><a href="#/2">Link</a></li>
-                        <li><a href="#/3">Link</a></li>
+                            {% verbatim %}
 
+                                <li><a href="#/locstructure/{{ locstructure.pk_id }}">{{ locstructure.title }}</a></li>
+
+                            {% endverbatim %}
+                        </div>
 
                     </ul>
 
+                    <div class="btn-group" style="margin-top: 25px">
+
+                        <button class="btn btn-warning dropdown-toggle" data-toggle="dropdown">
+                            <i class="icon-plus icon-white" style="margin-right: 5px"></i>add
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a href="#/loc/add">From scratch</a></li>
+                            <li><a href="#/loc/import">Import XML</a></li>
+                        </ul>
+                    </div>
+
                     <hr />
 
-                        <div class="btn-group">
-
-                            <button class="btn btn-warning dropdown-toggle" data-toggle="dropdown">
-                                <i class="icon-plus icon-white" style="margin-right: 5px"></i>Add
-
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li><a href="#">From scratch</a></li>
-                                <li><a href="#/loc/import">Import XML</a></li>
-                            </ul>
-                        </div>
+                        <a href="/api/" target="_blank"><img src="/static/icons/gear_view.png" /> View API V1</a>
 
                 </div>
             </div>
