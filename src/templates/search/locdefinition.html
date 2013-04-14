@@ -1,0 +1,7 @@
+<div class="hero-unit">
+    {% ifnotequal locdef.loc_title ' - no title - ' %}
+    <h3>{{ locdef.loc_title }}</h3>
+    {% endifnotequal %}
+    <p>{{ locdef.loc_description }}</p>
+
+</div>

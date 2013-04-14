@@ -1,11 +1,17 @@
 # -*- coding: utf-8 -*-
 
+from itertools import chain
+
+from django.http import HttpResponse
+from django.shortcuts import render, redirect
+from django.views.generic.base import View
+
 from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from loc.models import LOCStructure, Description
-from loc.serializers import LOCStructureListSerializer, LOCStructureDetailSerializer, SearchSerializer
+from loc.models import LOCStructure, LOCDefinition, Description, Title
+from loc.serializers import LOCStructureListSerializer, LOCStructureDetailSerializer, SearchSerializer, LOCSearchSerializer
 
 
 class LOCStructureList(generics.ListAPIView):
@@ -20,31 +26,54 @@ class LOCStructureDetail(generics.RetrieveUpdateDestroyAPIView):
 
 class LOCSearch(APIView):
     """
-    Search description and title properties of LOCdefinition and LOCstructures. Used for e.g. type ahead
+    Search description and title properties of LOCdefinition and LOCstructures. Used for e.g. type ahead fields or search boxes
     """
     def get(self, request):
 
         term = request.GET.get('term', None)
 
         if term:
-            descriptions = Description.objects.filter(value__icontains=term)[:15]
+            descriptions = Description.objects.filter(value__icontains=term)[:10]
+            titles = Title.objects.filter(value__icontains=term)[:10]
+            objects = chain(descriptions, titles)
         else:
-            descriptions = Description.objects.all()
+            #descriptions = Description.objects.all()
+            #titles = Title.objects.all()
+            objects = None
 
-        serializer = SearchSerializer(descriptions)
-        return Response(serializer.data)
-
-'''
-
-
-def get(self, request, pk=None):
-        if pk:
-            profile = UserProfile.objects.get(user_id=pk)
-        else:
-            profile = UserProfile.objects.get(user_id=request.user.id)
-
-        serializer = UserProfileDetailSerializer(profile)
+        serializer = LOCSearchSerializer(objects)
         return Response(serializer.data)
 
 
-'''
+class Search(APIView):
+    """
+    Search description and title properties of LOCdefinition and LOCstructures. Used for e.g. type ahead fields or search boxes
+    """
+    def get(self, request):
+
+        query = request.GET.get('query', None)
+
+        if query:
+            descriptions = Description.objects.filter(value__icontains=query)[:10]
+            titles = Title.objects.filter(value__icontains=query)[:10]
+            objects = chain(descriptions, titles)
+        else:
+            #descriptions = Description.objects.all()
+            #titles = Title.objects.all()
+            objects = None
+
+        serializer = SearchSerializer(objects)
+        return Response(serializer.data)
+
+
+class LOCDefitionView(View):
+    def get(self, request, id=None):
+        locdef = LOCDefinition.objects.get(pk=id)
+        print locdef
+        return render(request, 'search/locdefinition.html', {"locdef":locdef})
+
+
+class LOCStructureView(View):
+    def get(self, request, id=None):
+        print id
+        return HttpResponse("OK")

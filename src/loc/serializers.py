@@ -40,7 +40,19 @@ class LOCStructureDetailSerializer(LOCStructureBaseSerializer):
     class Meta:
         model = LOCStructure
 
+
 class SearchSerializer(serializers.Serializer):
+    value = serializers.SerializerMethodField('get_value')
+    uri = serializers.SerializerMethodField('get_uri')
+
+    def get_value(self, obj):
+        return obj.value
+
+    def get_uri(self, obj):
+        return LOC_BASE_URI + 'view/' + obj.content_type.model + '/' + obj.object_id + '/'
+
+
+class LOCSearchSerializer(serializers.Serializer):
     pk = serializers.Field()  # Note: `Field` is an untyped read-only field.
     label = serializers.SerializerMethodField('get_label')
     value = serializers.SerializerMethodField('get_value')
