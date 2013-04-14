@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import dateutil.parser
-from lxml import etree, objectify
+from lxml import objectify
 
-from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import render, redirect
 from django.views.generic.base import View

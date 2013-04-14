@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 
 from rest_framework import serializers
+from django.conf import settings
 
-from loc.models import LOCStructure
+from loc.models import LOCStructure, Description
+
+LOC_BASE_URI = settings.LOC_BASE_URI
 
 
 class LOCStructureBaseSerializer(serializers.ModelSerializer):
@@ -36,3 +39,18 @@ class LOCStructureDetailSerializer(LOCStructureBaseSerializer):
 
     class Meta:
         model = LOCStructure
+
+class SearchSerializer(serializers.Serializer):
+    pk = serializers.Field()  # Note: `Field` is an untyped read-only field.
+    label = serializers.SerializerMethodField('get_label')
+    value = serializers.SerializerMethodField('get_value')
+    uri = serializers.SerializerMethodField('get_uri')
+
+    def get_label(self, obj):
+        return obj.value
+
+    def get_value(self, obj):
+        return obj.value
+
+    def get_uri(self, obj):
+        return LOC_BASE_URI+ obj.content_type.model + '/' + obj.object_id + '/'
