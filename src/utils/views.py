@@ -129,6 +129,12 @@ class XMLImportView(View):
                 stru.version = root.version
             if hasattr(root, 'created'):
                 stru.created = dateutil.parser.parse(str(root.created))
+            if hasattr(root, 'issued'):
+                stru.issued = dateutil.parser.parse(str(root.issued))
+            if hasattr(root, 'validityStart'):
+                stru.validity_start = dateutil.parser.parse(str(root.validityStart))
+            if hasattr(root, 'validityEnd'):
+                stru.validity_end = dateutil.parser.parse(str(root.validityEnd))
 
             try:
                 lang_code = root.get(XML+'lang')
@@ -169,23 +175,16 @@ class XMLImportView(View):
                 locass = LOCAssociation()
                 locass.loc_structure = stru
                 locass.type = loc.get('type')
-
-                subject = loc.find(INLOC+'subject')
-                locass.subject_id = subject.get('id')
-
-                scheme = loc.find(INLOC+'scheme')
-                locass.scheme_id = scheme.get('id', '')
-
-                object = loc.find(INLOC+'object')
-                locass.object_id = object.get('id','')
-
-                number = loc.find(INLOC+'number')
-                locass.number = number
+                locass.subject_id = loc.subject.get('id')
+                locass.scheme_id = loc.scheme.get('id', '')
+                locass.object_id = loc.object.get('id','')
+                if hasattr(loc, 'number'):
+                    locass.number = loc.number
 
                 locass.save()
 
-                process_labels(scheme, locass, 'scheme')
-                process_labels(object, locass, 'object')
+                process_labels(loc.scheme, locass, 'scheme')
+                process_labels(loc.object, locass, 'object')
 
 
         return redirect('/')
