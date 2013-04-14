@@ -1,0 +1,28 @@
+<script>
+$('#typeahead').typeahead({
+    minLength: 3,
+    source: function (query, process) {
+    return $.get('/api/search', { query: query }, function (data) {
+        locs = [];
+        map = {};
+        $.each(data, function (i, locdef) {
+            map[locdef.value] = locdef;
+            locs.push(locdef.value);
+        });
+
+        return process(locs);
+        });
+
+    },
+    updater: function (item) {
+        selectedLoc = map[item].uri;
+        console.log(selectedLoc);
+        $('#result').load(selectedLoc);
+        return item;
+    }
+});
+$('#clear').on('click', function() {
+    $('#typeahead').val("");
+    $('#result').empty();
+});
+</script>

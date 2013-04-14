@@ -61,6 +61,15 @@
 
 {% include "_jslibs.html" %}
 
+{% if user.is_authenticated %}
+
+{% else %}
+
+    <!-- script for type-ahead of LOC Search -->
+    {% include "_js_search.html" %}
+
+{% endif %}
+
 </body>
 </html>
 
