@@ -58,33 +58,65 @@ class FurtherInfoInline(GenericStackedInline):
     }
 
 
-class LOCModelAdmin(GenericAdminModelAdmin):
-    model = LOCModel
-    inlines = [
-             TitleInline,
-             DescriptionInline,
-             AbbreviationInline,
-             RightsInline,
-             FurtherInfoInline,
-             ]
+class ExtraIDInline(GenericStackedInline):
+    model = ExtraID
+    extra = 0
+    related_lookup_fields = {
+        'generic': [['content_type', 'object_id'],],
+        }
 
 
-class LOCDefinitionAdmin(LOCModelAdmin):
-    model = LOCDefinition
+class ModificationInline(GenericStackedInline):
+    model = Modification
+    extra = 0
+    related_lookup_fields = {
+        'generic': [['content_type', 'object_id'],],
+        }
 
-
-class LOCStructureAdmin(LOCModelAdmin):
-    model = LOCStructure
-
-
-class CombinationRuleAdmin(admin.ModelAdmin):
+class CombinationRuleInline(admin.StackedInline):
     model = CombinationRule
+    extra = 0
+
+
+class LOCDefinitionAdmin(GenericAdminModelAdmin):
+    model = LOCDefinition
+    inlines = [
+        TitleInline,
+        DescriptionInline,
+        AbbreviationInline,
+        RightsInline,
+        FurtherInfoInline,
+        ExtraIDInline,
+        ModificationInline
+    ]
+
+
+class LOCStructureAdmin(GenericAdminModelAdmin):
+    model = LOCStructure
+    inlines = [
+        TitleInline,
+        DescriptionInline,
+        AbbreviationInline,
+        RightsInline,
+        FurtherInfoInline,
+        ExtraIDInline,
+        ModificationInline,
+        CombinationRuleInline
+    ]
+
+
+class LabelInline(admin.StackedInline):
+    model = Label
+    extra = 0
 
 
 class LOCAssociationAdmin(admin.ModelAdmin):
     model = LOCAssociation
+    inlines = [
+        LabelInline,
+    ]
 
-#admin.site.register(CombinationRule, CombinationRuleAdmin)
+
 admin.site.register(Language, LanguageAdmin)
 admin.site.register(LOCDefinition, LOCDefinitionAdmin)
 admin.site.register(LOCStructure, LOCStructureAdmin)
