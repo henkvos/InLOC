@@ -34,14 +34,14 @@ class LOCSearch(APIView):
 
         if term:
             descriptions = Description.objects.filter(value__icontains=term)[:10]
-            titles = Title.objects.filter(value__icontains=term)[:10]
-            objects = chain(descriptions, titles)
+            #titles = Title.objects.filter(value__icontains=term)[:10]
+            #objects = chain(descriptions, titles)
         else:
-            #descriptions = Description.objects.all()
+            descriptions = Description.objects.all()
             #titles = Title.objects.all()
-            objects = None
+            #objects = None
 
-        serializer = LOCSearchSerializer(objects)
+        serializer = LOCSearchSerializer(descriptions)
         return Response(serializer.data)
 
 
@@ -55,14 +55,14 @@ class Search(APIView):
 
         if query:
             descriptions = Description.objects.filter(value__icontains=query)[:10]
-            titles = Title.objects.filter(value__icontains=query)[:10]
-            objects = chain(descriptions, titles)
+            #titles = Title.objects.filter(value__icontains=query)[:10]
+            #objects = chain(descriptions, titles)
         else:
-            #descriptions = Description.objects.all()
+            descriptions = Description.objects.all()
             #titles = Title.objects.all()
-            objects = None
+            #objects = None
 
-        serializer = SearchSerializer(objects)
+        serializer = SearchSerializer(descriptions)
         return Response(serializer.data)
 
 
