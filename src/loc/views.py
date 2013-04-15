@@ -69,7 +69,6 @@ class Search(APIView):
 class LOCDefitionView(View):
     def get(self, request, id=None):
         locdef = LOCDefinition.objects.get(pk=id)
-        print locdef
         return render(request, 'search/locdefinition.html', {"locdef":locdef})
 
 

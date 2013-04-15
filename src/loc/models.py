@@ -142,6 +142,12 @@ class LOCModel(models.Model):
         else:
             return self.loc_title()
 
+    def loc_search_title(self):
+        if self.loc_title() == ' - no title - ':
+            return truncatewords(self.loc_description(),5)
+        else:
+            return self.loc_title()
+
     class Meta:
         abstract = True
         

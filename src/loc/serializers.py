@@ -64,5 +64,6 @@ class LOCSearchSerializer(serializers.Serializer):
     def get_value(self, obj):
         return obj.value
 
+
     def get_uri(self, obj):
         return LOC_BASE_URI+ obj.content_type.model + '/' + obj.object_id + '/'
