@@ -18,14 +18,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
         'NAME': 'inloc',                      # Or path to database file if using sqlite3.
-        #'USER': 'InLoc',                      # Not used with sqlite3.
         'USER': 'Django',
-        #'PASSWORD': 'LocMeIn',                  # Not used with sqlite3.
 
-        'PASSWORD': '1|41Vx-5U4z0IIY',                  # Not used with sqlite3.
-        'HOST': 'dev-qa.cl8lslnx4bi0.eu-west-1.rds.amazonaws.com',
 
-        #'HOST': 'localhost',                      # Set to empty string for localhost. Not used with sqlite3.
+        'HOST': 'localhost',                      # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '3306',                       # Set to empty string for default. Not used with sqlite3.
 
     }
