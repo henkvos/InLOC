@@ -3,9 +3,15 @@
 from rest_framework import serializers
 from django.conf import settings
 
-from loc.models import LOCStructure, Description
+from loc.models import LOCStructure, Description, LOCAssociation
 
 LOC_BASE_URI = settings.LOC_BASE_URI
+
+class LOCAssociationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LOCAssociation
+        fields = ('type', 'subject_id', 'scheme_id', 'object_id', 'number')
+
 
 
 class LOCStructureBaseSerializer(serializers.ModelSerializer):
@@ -13,6 +19,7 @@ class LOCStructureBaseSerializer(serializers.ModelSerializer):
     description = serializers.SerializerMethodField('get_description')
     uri = serializers.SerializerMethodField('get_uri')
     #locdefinitions = serializers.RelatedField(many=True)
+    locassociations = LOCAssociationSerializer(many=True)
 
     def get_title(self, obj):
         return obj.loc_title()
