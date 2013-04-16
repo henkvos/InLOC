@@ -1,9 +1,32 @@
-<form action="/add/" method="post">
+<form action="/add/" method="post" class="form-horizontal">
     {% csrf_token %}
     <fieldset>
         <legend>Add LOC structure</legend>
 
         <span class="help-block">Please fill out the fields below to add a new LOC structure:</span>
+        <br>
+
+        <div class="control-group">
+            <label class="control-label" for="inputId">id</label>
+            <div class="controls">
+                <input type="text" id="inputId" placeholder="id" class="span6">
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label" for="inputLanguage">language</label>
+            <div class="controls">
+                <select id="inputLanguage">
+                    <option>English</option>
+                    <option>French</option>
+                    <option>German</option>
+                    <option>Dutch</option>
+                    <option>Italian</option>
+                </select>
+
+            </div>
+        </div>
+
 
     </fieldset>
 </form>
