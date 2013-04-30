@@ -157,6 +157,9 @@ class LOCStructure(LOCModel):
     A LOCstructure instance shall not have more than one combinationRules property in each (or no specified) language.
     '''
 
+    def base_url(self):
+        return self.id[:-1]
+
 
 class CombinationRule(models.Model): #simply a text field instruction
     pk_id = models.AutoField(primary_key=True)

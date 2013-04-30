@@ -76,3 +76,10 @@ class LOCStructureView(View):
     def get(self, request, id=None):
         print id
         return HttpResponse("OK")
+
+
+class RdfView(View):
+    def get(self, request, id=None):
+        locstructure = LOCStructure.objects.get(pk=id)
+        print locstructure
+        return render(request, 'export/locstucture.rdf.ttl', {"locstructure":locstructure})
