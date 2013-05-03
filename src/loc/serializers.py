@@ -1,8 +1,17 @@
 # -*- coding: utf-8 -*-
 
 from rest_framework import serializers
+from django.conf import settings
 
-from loc.models import LOCStructure
+from loc.models import LOCStructure, Description, LOCAssociation
+
+LOC_BASE_URI = settings.LOC_BASE_URI
+
+class LOCAssociationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LOCAssociation
+        fields = ('type', 'subject_id', 'scheme_id', 'object_id', 'number')
+
 
 
 class LOCStructureBaseSerializer(serializers.ModelSerializer):
@@ -10,6 +19,7 @@ class LOCStructureBaseSerializer(serializers.ModelSerializer):
     description = serializers.SerializerMethodField('get_description')
     uri = serializers.SerializerMethodField('get_uri')
     #locdefinitions = serializers.RelatedField(many=True)
+    locassociations = LOCAssociationSerializer(many=True)
 
     def get_title(self, obj):
         return obj.loc_title()
@@ -36,3 +46,31 @@ class LOCStructureDetailSerializer(LOCStructureBaseSerializer):
 
     class Meta:
         model = LOCStructure
+
+
+class SearchSerializer(serializers.Serializer):
+    value = serializers.SerializerMethodField('get_value')
+    uri = serializers.SerializerMethodField('get_uri')
+
+    def get_value(self, obj):
+        return obj.value
+
+    def get_uri(self, obj):
+        return LOC_BASE_URI + 'view/' + obj.content_type.model + '/' + obj.object_id + '/'
+
+
+class LOCSearchSerializer(serializers.Serializer):
+    pk = serializers.Field()  # Note: `Field` is an untyped read-only field.
+    label = serializers.SerializerMethodField('get_label')
+    value = serializers.SerializerMethodField('get_value')
+    uri = serializers.SerializerMethodField('get_uri')
+
+    def get_label(self, obj):
+        return obj.value
+
+    def get_value(self, obj):
+        return obj.value
+
+
+    def get_uri(self, obj):
+        return LOC_BASE_URI+ obj.content_type.model + '/' + obj.object_id + '/'
