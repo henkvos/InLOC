@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:ng="http://angularjs.org">
+
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+
+    <script type="text/javascript">
+
+        loc1 = {
+            "id": "http://www.example.com/abilities/winegrower/1",
+            "language": "en",
+            "created": "2010-08-16T22:00:00Z",
+            "version": "2.0",
+            "titles" : [
+                {
+                    "language": "default",
+                    "value": "Wine grower (m/f)"
+                },
+                {
+                    "language": "en",
+                    "value": "Wine grower (m/f)"
+                },
+                {
+                    "language": "de",
+                    "value": "Winzer/Winzerin"
+                },
+                {
+                    "language": "fr",
+                    "value": "Vigneron"
+                },
+                {
+                    "language": "nl",
+                    "value": "Wijnmaker"
+                }]
+
+        };
+
+        loc2 = {
+            "id": "http://www.example.com/abilities/winegrower/1",
+            "language": "en",
+            "created": "2010-08-16T22:00:00Z",
+            "version": "2.0",
+            "title" : {
+                "default": "Wine grower (m/f)",
+                "en": "Wine grower (m/f)",
+                "de": "Winzer/Winzerin",
+                "fr": "Vigneron",
+                "nl": "Wijnmaker"
+            }
+        };
+
+        function testCase1() {
+
+            //display french title for loc structure wine maker or default if undefined
+            $.each(loc1.titles, function(i, v) {
+                if (v.language == "fr") {
+                    //alert(v.value);
+                    title = v.value;
+                }
+                if (v.language == "default") {
+                    //alert(v.value);
+                    default_title = v.value;
+                }
+            });
+
+            if (typeof(title) == 'undefined') {
+                title = default_title;
+            }
+
+            alert(title);
+
+        };
+
+
+        function testCase2() {
+
+            //display french title for loc structure wine maker or default if undefined
+            title = loc2.title.fr;
+
+            if (typeof(title) == 'undefined') {
+                title = loc2.title.default;
+            }
+
+            alert(title);
+
+        };
+
+    </script>
+
+</head>
+
+<body>
+
+<p>
+    <button onclick="testCase1();">
+        Case 1: using array of title objects
+    </button>
+</p>
+
+<p>
+    <button onclick="testCase2();">
+        Case 2: using object for title with lang attrib
+    </button>
+</p>
+
+
+</body>
+</html>

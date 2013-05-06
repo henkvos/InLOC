@@ -138,6 +138,7 @@ class LOCModel(models.Model):
     
     def __unicode__(self):
         if self.loc_title() == ' - no title - ':
+            #to do: first check for abbr then serve title
             return truncatewords(self.loc_description(),5)
         else:
             return self.loc_title()

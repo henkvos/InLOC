@@ -3,22 +3,26 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
 
+
 from rest_framework.decorators import api_view
 from rest_framework.reverse import reverse
 
 from auth.views import LogOut, LogIn
 from home.views import Home
-from loc.views import LOCDefitionView, LOCStructureView, RdfView
+from loc.views import LOCDefitionView, LOCStructureView, RdfView, JsonView, TestView
 from utils.views import XMLImportView
 
 admin.autodiscover()
 
 urlpatterns = patterns('',
 
+    (r'^json/test/$', TestView.as_view()),
     (r'^api/', include('api.urls')),
     (r'^view/locdefinition/(?P<id>[0-9]+)/$', LOCDefitionView.as_view()),
-    (r'^view/locstructure/(?P<id>[0-9]+)/$', LOCStructureView.as_view()),
+    #(r'^view/locstructure/(?P<id>[0-9]+)/$', LOCStructureView.as_view()),
+    (r'^view/locstructure/(?P<id>[0-9]+)/$', JsonView.as_view()),
     (r'^view/rdf/(?P<id>[0-9]+)/$', RdfView.as_view()),
+    (r'^view/json/(?P<id>[0-9]+)/$', JsonView.as_view()),
 
     (r'^grappelli/', include('grappelli.urls')),
     (r'^partials/', include('partials.urls')),

@@ -3,7 +3,7 @@
 from rest_framework import serializers
 from django.conf import settings
 
-from loc.models import LOCStructure, Description, LOCAssociation
+from loc.models import LOCStructure, Description, LOCAssociation, Title, Abbreviation, FurtherInformation, Rights, CombinationRule
 
 LOC_BASE_URI = settings.LOC_BASE_URI
 
@@ -12,6 +12,55 @@ class LOCAssociationSerializer(serializers.ModelSerializer):
         model = LOCAssociation
         fields = ('type', 'subject_id', 'scheme_id', 'object_id', 'number')
 
+
+class TitleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Title
+        fields = ('language', 'value')
+
+
+class DescriptionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Description
+        fields = ('language', 'value')
+
+
+class AbbreviationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Abbreviation
+        fields = ('language', 'value')
+
+
+class FurtherInformationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Abbreviation
+        fields = ('language', 'value')
+
+
+class RightsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Rights
+        fields = ('language', 'value')
+
+"""
+
+description = generic.GenericRelation(Description)
+    title = generic.GenericRelation(Title)
+    abbr = generic.GenericRelation(Abbreviation)
+    further_information = generic.GenericRelation(FurtherInformation)
+    rights = generic.GenericRelation(Rights)
+
+"""
+
+class LocStructureSerializer(serializers.ModelSerializer):
+    title = TitleSerializer(many=True)
+    description = DescriptionSerializer(many=True)
+    abbr = AbbreviationSerializer(many=True)
+    further_information = FurtherInformationSerializer(many=True)
+    rights = RightsSerializer(many=True)
+
+    class Meta:
+        model = LOCStructure
 
 
 class LOCStructureBaseSerializer(serializers.ModelSerializer):
@@ -43,6 +92,7 @@ class LOCStructureListSerializer(LOCStructureBaseSerializer):
 
 
 class LOCStructureDetailSerializer(LOCStructureBaseSerializer):
+#class LOCStructureDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = LOCStructure
@@ -70,7 +120,6 @@ class LOCSearchSerializer(serializers.Serializer):
 
     def get_value(self, obj):
         return obj.value
-
 
     def get_uri(self, obj):
         return LOC_BASE_URI+ obj.content_type.model + '/' + obj.object_id + '/'

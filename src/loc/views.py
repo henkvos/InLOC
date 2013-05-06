@@ -2,6 +2,8 @@
 
 from itertools import chain
 
+import json
+
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views.generic.base import View
@@ -11,7 +13,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from loc.models import LOCStructure, LOCDefinition, Description, Title
-from loc.serializers import LOCStructureListSerializer, LOCStructureDetailSerializer, SearchSerializer, LOCSearchSerializer
+from loc.serializers import LOCStructureListSerializer, LOCStructureDetailSerializer, SearchSerializer, LOCSearchSerializer, LocStructureSerializer
 
 
 class LOCStructureList(generics.ListAPIView):
@@ -83,3 +85,15 @@ class RdfView(View):
         locstructure = LOCStructure.objects.get(pk=id)
         print locstructure
         return render(request, 'export/locstucture.rdf.ttl', {"locstructure":locstructure})
+
+
+class JsonView(APIView):
+    def get(self, request, id=None):
+        locstructure = LOCStructure.objects.get(pk=id)
+        serializer = LocStructureSerializer(locstructure)
+        return Response(serializer.data)
+
+
+class TestView(View):
+    def get(self, request):
+        return render(request, 'jsontest.html', {})
