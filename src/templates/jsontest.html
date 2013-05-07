@@ -16,7 +16,8 @@
             "version": "2.0",
             "titles" : [
                 {
-                    "language": "default",
+                    //"language": "default",
+                    //"language": "",
                     "value": "Wine grower (m/f)"
                 },
                 {
@@ -27,10 +28,10 @@
                     "language": "de",
                     "value": "Winzer/Winzerin"
                 },
-                {
+                /*{
                     "language": "fr",
                     "value": "Vigneron"
-                },
+                },*/
                 {
                     "language": "nl",
                     "value": "Wijnmaker"
@@ -60,9 +61,12 @@
                     //alert(v.value);
                     title = v.value;
                 }
-                if (v.language == "default") {
+                /*if (v.language == "") {
                     //alert(v.value);
                     default_title = v.value;
+                }*/
+                if (typeof(v.language) == 'undefined') {
+                default_title = v.value;
                 }
             });
 
