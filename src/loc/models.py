@@ -164,7 +164,7 @@ class LOCStructure(LOCModel):
 
 class CombinationRule(models.Model): #simply a text field instruction
     pk_id = models.AutoField(primary_key=True)
-    loc_structure = models.ForeignKey(LOCStructure)
+    loc_structure = models.ForeignKey(LOCStructure, related_name='combinationrules')
     language = models.ForeignKey(Language, blank=True, null=True)
     value = models.TextField(blank=True, null=True)
 

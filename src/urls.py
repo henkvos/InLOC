@@ -16,11 +16,11 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
 
-    (r'^json/test/$', TestView.as_view()),
+    #(r'^json/test/$', TestView.as_view()),
     (r'^api/', include('api.urls')),
     (r'^view/locdefinition/(?P<id>[0-9]+)/$', LOCDefitionView.as_view()),
-    #(r'^view/locstructure/(?P<id>[0-9]+)/$', LOCStructureView.as_view()),
-    (r'^view/locstructure/(?P<id>[0-9]+)/$', JsonView.as_view()),
+    (r'^view/locstructure/(?P<id>[0-9]+)/$', LOCStructureView.as_view()),
+    #(r'^view/locstructure/(?P<id>[0-9]+)/$', JsonView.as_view()),
     (r'^view/rdf/(?P<id>[0-9]+)/$', RdfView.as_view()),
     (r'^view/json/(?P<id>[0-9]+)/$', JsonView.as_view()),
 
