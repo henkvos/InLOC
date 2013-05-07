@@ -3,14 +3,23 @@
 from rest_framework import serializers
 from django.conf import settings
 
-from loc.models import LOCStructure, Description, LOCAssociation, Title, Abbreviation, FurtherInformation, Rights, CombinationRule
+from loc.models import LOCStructure, LOCDefinition, Description, LOCAssociation, Title, Abbreviation, FurtherInformation, Rights, CombinationRule, Label
 
 LOC_BASE_URI = settings.LOC_BASE_URI
 
+
+class LabelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Label
+        fields = ('language', 'value', 'label_for')
+
+
 class LOCAssociationSerializer(serializers.ModelSerializer):
+    labels = LabelSerializer(many=True)
+
     class Meta:
         model = LOCAssociation
-        fields = ('type', 'subject_id', 'scheme_id', 'object_id', 'number')
+        fields = ('type', 'subject_id', 'scheme_id', 'object_id', 'number', 'labels')
 
 
 class TitleSerializer(serializers.ModelSerializer):
@@ -33,7 +42,7 @@ class AbbreviationSerializer(serializers.ModelSerializer):
 
 class FurtherInformationSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Abbreviation
+        model = FurtherInformation
         fields = ('language', 'value')
 
 
@@ -42,17 +51,14 @@ class RightsSerializer(serializers.ModelSerializer):
         model = Rights
         fields = ('language', 'value')
 
-"""
 
-description = generic.GenericRelation(Description)
-    title = generic.GenericRelation(Title)
-    abbr = generic.GenericRelation(Abbreviation)
-    further_information = generic.GenericRelation(FurtherInformation)
-    rights = generic.GenericRelation(Rights)
+class CombinationRuleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CombinationRule
+        fields = ('language', 'value')
 
-"""
 
-class LocStructureSerializer(serializers.ModelSerializer):
+class LocDefinitionSerializer(serializers.ModelSerializer):
     title = TitleSerializer(many=True)
     description = DescriptionSerializer(many=True)
     abbr = AbbreviationSerializer(many=True)
@@ -60,7 +66,23 @@ class LocStructureSerializer(serializers.ModelSerializer):
     rights = RightsSerializer(many=True)
 
     class Meta:
+        model = LOCDefinition
+
+
+class LocStructureSerializer(serializers.ModelSerializer):
+    title = TitleSerializer(many=True)
+    description = DescriptionSerializer(many=True)
+    abbr = AbbreviationSerializer(many=True)
+    further_information = FurtherInformationSerializer(many=True)
+    rights = RightsSerializer(many=True)
+    combinationrules = CombinationRuleSerializer(many=True)
+
+    locdefinitions = LocDefinitionSerializer(many=True)
+    locassociations = LOCAssociationSerializer(many=True)
+
+    class Meta:
         model = LOCStructure
+        #depth = 1
 
 
 class LOCStructureBaseSerializer(serializers.ModelSerializer):
