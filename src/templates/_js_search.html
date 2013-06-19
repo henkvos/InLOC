@@ -1,4 +1,5 @@
 <script>
+
 $('#typeahead').typeahead({
     minLength: 3,
     source: function (query, process) {
@@ -16,13 +17,21 @@ $('#typeahead').typeahead({
     },
     updater: function (item) {
         selectedLoc = map[item].uri;
-        console.log(selectedLoc);
-        $('#result').load(selectedLoc);
+        $('#result').load(selectedLoc, function(){
+            $('#typeahead').val("");
+        });
         return item;
     }
 });
+
 $('#clear').on('click', function() {
     $('#typeahead').val("");
     $('#result').empty();
 });
+
+$(document).ready(function() {
+    $('#typeahead').val("").focus();
+    $('#result').empty();
+});
+
 </script>
