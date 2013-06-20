@@ -188,6 +188,7 @@ class LOCDefinition(LOCModel):
         base_uri = settings.LOC_BASE_URI
         return u'%s%s/%s' % (base_uri, 'api/locdefinitions', self.pk_id)
 
+
 class LOCAssociation(models.Model):
     '''
     see http://wiki.teria.no/display/inloc/type
