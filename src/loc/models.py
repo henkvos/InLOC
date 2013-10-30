@@ -53,7 +53,6 @@ class Rights(LOCProperty):
 class FurtherInformation(LOCProperty):
     class Meta:
         verbose_name_plural = "Further information"
-    pass
 
 
 class ExtraID(models.Model):
@@ -107,7 +106,7 @@ class LOCModel(models.Model):
             en = Language.objects.get(code='en')
             en_title = self.title.get(language=en)
             if en_title:
-                return u'%s' % (en_title)
+                return u'%s' % (en_title.value)
             else:
                 return u'%s' % (' - no title - ')
 
@@ -115,7 +114,7 @@ class LOCModel(models.Model):
             titles = Title.objects.filter(object_id=self.pk_id).exclude(language__isnull=False)
             try:
                 title = titles[0]
-                return u'%s' % (title)
+                return u'%s' % (title.value)
             except:
                 return u'%s' % (' - no title - ')
 
@@ -124,7 +123,7 @@ class LOCModel(models.Model):
             en = Language.objects.get(code='en')
             en_description = self.description.get(language=en)
             if en_description:
-                return u'%s' % (en_description)
+                return u'%s' % (en_description.value)
             else:
                 return u'%s' % (' - no description - ')
 
@@ -132,7 +131,7 @@ class LOCModel(models.Model):
             descriptions = Description.objects.filter(object_id=self.pk_id).exclude(language__isnull=False)
             try:
                 description = descriptions[0]
-                return u'%s' % (description)
+                return u'%s' % (description.value)
             except:
                 return u'%s' % (' - description - ')
     
@@ -188,6 +187,7 @@ class LOCDefinition(LOCModel):
         '''
         base_uri = settings.LOC_BASE_URI
         return u'%s%s/%s' % (base_uri, 'api/locdefinitions', self.pk_id)
+
 
 class LOCAssociation(models.Model):
     '''

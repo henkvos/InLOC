@@ -90,6 +90,12 @@ class LOCDefinitionAdmin(GenericAdminModelAdmin):
         ModificationInline
     ]
 
+    list_display = ('loc_title', 'loc_description', 'primary_structure')
+    #search_fields = ['user__username', 'user__first_name', 'user__last_name',]
+    save_as = True
+    list_filter = ('primary_structure', 'language')
+
+
 
 class LOCStructureAdmin(GenericAdminModelAdmin):
     model = LOCStructure
@@ -103,6 +109,7 @@ class LOCStructureAdmin(GenericAdminModelAdmin):
         ModificationInline,
         CombinationRuleInline
     ]
+    list_filter = ('language',)
 
 
 class LabelInline(admin.StackedInline):
@@ -115,6 +122,8 @@ class LOCAssociationAdmin(admin.ModelAdmin):
     inlines = [
         LabelInline,
     ]
+    list_display = ('subject_id', 'type', 'loc_structure')
+    list_filter = ('loc_structure', 'type')
 
 
 admin.site.register(Language, LanguageAdmin)

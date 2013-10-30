@@ -12,7 +12,7 @@ from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from loc.models import LOCStructure, LOCDefinition, Description, Title
+from loc.models import LOCStructure, LOCDefinition, Description, Title, FurtherInformation
 from loc.serializers import LOCStructureListSerializer, LOCStructureDetailSerializer, SearchSerializer, LOCSearchSerializer, LocStructureSerializer
 
 
@@ -76,8 +76,10 @@ class LOCDefitionView(View):
 
 class LOCStructureView(View):
     def get(self, request, id=None):
-        print id
-        return HttpResponse("OK")
+        locstructure = LOCStructure.objects.get(pk=id)
+        furtherinfo = FurtherInformation.objects.filter()
+
+        return render(request, 'search/locstructure.html', {"locstructure":locstructure})
 
 
 class RdfView(View):

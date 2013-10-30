@@ -1,0 +1,45 @@
+<div>
+    <ul class="breadcrumb">
+        <li><a href="/">Search</a><span class="divider">/</span></li>
+        <li>{{ locstructure.loc_title }}</li>
+
+        <a class="pull-right" href="/">&laquo; Back to home</a>
+    </ul>
+
+
+    <div class="well">
+
+        <p class="text-info">
+            {{ locstructure.loc_description }}
+        </p>
+        <dl class="dl-horizontal">
+        {% if locstructure.version %}
+            <dt>Version</dt>
+            <dd>{{ locstructure.version }}</dd>
+        {% endif %}
+        {% if locstructure.validity_start %}
+            <dt>Valid from</dt>
+            <dd>{{ locstructure.validity_start|date:"d M Y" }}</dd>
+        {% endif %}
+        {% if locstructure.validity_end %}
+            <dt>Valid till</dt>
+            <dd>{{ locstructure.validity_end|date:"d M Y" }}</dd>
+        {% endif %}
+
+
+        </dl>
+
+    {% if locstructure.further_information.all %}
+        <p>
+        <small>Further information:
+
+        {% for f in locstructure.further_information.all %}
+            {% if not forloop.first %}, {% endif %}{{ f.value }}
+        {% endfor %}
+        </small>
+        </p>
+
+    {% endif %}
+
+    </div>
+</div>

@@ -17,8 +17,20 @@
             <dd>{{ locdef.primary_structure }}</dd>
         </dl>
 
-        <p><a class="btn" href="#">View details &raquo;</a></p>
+        <p><button class="btn" id="loc-view-btn" data-id="{{ locdef.primary_structure.pk_id }}">View details &raquo; </button></p>
 
     </fieldset>
 
 </div>
+
+<script>
+    $(document).ready(function() {
+
+        $("#loc-view-btn").on('click', function(evt){
+            var pk_id = $(this).data('id');
+            var url = "/view/locstructure/" + pk_id + "/";
+            $("#loc-view").load(url);
+        })
+
+    });
+</script>
